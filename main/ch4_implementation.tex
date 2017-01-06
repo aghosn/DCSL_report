@@ -1,0 +1,14 @@
+\chapter{Implementation}
+Redoing the memory management:
+pages, pgroot, vmas, mms. New hierarchy, backward compatibility preserved though
+all the code is available (hide mms behind a flag).
+
+Sandbox is backported to dune.
+Describe what the sandbox is and the different challenges I faced.
+
+Now we have lwc as a library, inside a program ran inside the sandbox.
+
+lwc implementation details, tricks, e.g., the mapping between host and guest,
+translating the syscall arguments (i.e., the gvas to hvas)
+
+

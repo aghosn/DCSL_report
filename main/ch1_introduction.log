@@ -1,0 +1,148 @@
+This is LuaTeX, Version 0.95.0 (TeX Live 2016)  (format=lualatex 2017.1.1)  4 JAN 2017 10:23
+ restricted system commands enabled.
+**ch1_introduction
+(./ch1_introduction.tex
+LaTeX2e <2016/03/31>
+Babel <3.9r> and hyphenation patterns for 1 language(s) loaded.
+! Undefined control sequence.
+l.1 \chapter
+          {Introduction}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1 \chapter{I
+            ntroduction}
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (20.0pt too wide) in paragraph at lines 1--21
+[]Introduction
+ []
+
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.22 P
+    rocesses are the common abstraction in general purpose kernels to repres...
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (20.0pt too wide) in paragraph at lines 22--28
+[]Processes
+ []
+
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.29 W
+    hile the thread abstraction enables to isolate units of computation,
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (20.0pt too wide) in paragraph at lines 29--38
+[]While
+ []
+
+
+Overfull \hbox (18.39986pt too wide) in paragraph at lines 29--38
+\OT1/cmr/m/it/10 con-
+ []
+
+
+Overfull \hbox (19.97208pt too wide) in paragraph at lines 29--38
+\OT1/cmr/m/it/10 texts\nullfont ,
+ []
+
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.39 U
+    nfortunately, existing implementations rely on a modified kernel, which ...
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (20.0pt too wide) in paragraph at lines 39--50
+[]Unfortunately,
+ []
+
+
+Overfull \hbox (25.9498pt too wide) in paragraph at lines 39--50
+\OT1/cmr/m/it/10 Light-
+ []
+
+
+Overfull \hbox (30.68867pt too wide) in paragraph at lines 39--50
+\OT1/cmr/m/it/10 Weight
+ []
+
+
+Overfull \hbox (21.46652pt too wide) in paragraph at lines 39--50
+\OT1/cmr/m/it/10 Con-
+ []
+
+
+Overfull \hbox (20.7929pt too wide) in paragraph at lines 39--50
+\OT1/cmr/m/it/10 texts\nullfont [CITE]
+ []
+
+
+Overfull \hbox (13.79991pt too wide) in paragraph at lines 39--50
+\OT1/cmr/m/it/10 lwc
+ []
+
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.51 W
+    e believe that providing the context abstraction via efficient virtualiz...
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+)
+! Emergency stop.
+<*> ch1_introduction
+                 
+*** (job aborted, no legal \end found)
+
+
+
+Here is how much of LuaTeX's memory you used:
+ 9 strings out of 495119
+ 100000,89155 words of node,token memory allocated 15236 words of node memory still in use:
+   23 hlist, 3 disc, 5 local_par, 1 dir, 364 glue, 5 kern, 13 penalty, 2020 glyp
+h, 32 glue_spec, 1 temp, 1 write nodes
+   avail lists: 2:11,3:1,4:63,5:3,7:60,8:1,9:1,10:62
+ 3674 multiletter control sequences out of 65536+600000
+ 15 fonts using 632831 bytes
+ 13i,1n,10p,145b,67s stack positions out of 5000i,500n,10000p,200000b,100000s
+!  ==> Fatal error occurred, no output PDF file produced!

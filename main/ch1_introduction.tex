@@ -1,0 +1,68 @@
+\chapter{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+%Description of processes: 
+%more than just memory, also unit of computation, privilege, execution state etc.
+%The only available abstraction at the OS level for memory isolation.
+%Problem: it is very expensive.
+%TRIALS to decouple memory isolation from process abstraction, e.g., LWC and others. (cite)
+%Goal is to have a low overhead while enabling to maintain several execution states.
+%+ portability on any linux plateform.
+%We inspired ourselves from the lwc implementation, and imported the idea to dune.
+%Advantage of working with dune is:
+%We define our own interface and have control over everything
+%We don't have to respect all the linux implementations etc.
+%Enables to have our own VM implementation, a simplified version of linux.
+%Can tune it to our needs (e.g., managing memory regions etc.)
+%Chapter 2 is related work.
+%Chapter 3 is the design and interface.
+%Chapter 4 implementation.
+%Chapter 5 future work
+%Chapter 6 conclusion.
+
+Processes are the common abstraction in general purpose kernels to represent a
+unit of isolation in terms of memory, privilege, and execution state.
+Processes enable to isolate applications from each other, by preventing one process
+from accessing another's memory, privileged ressources, and state.
+However, process management, context switching, and ressource accountability introduce 
+non-negligeable overheads at the OS-level, especially compared to the associated hardware costs.
+
+While the thread abstraction enables to isolate units of computation,
+memory isolation is attainable only by going through the costly creation and management 
+of a new process.
+Others[CITE] have identified this discrepancy and designed new interfaces, henceforth decoupling
+memory isolation, priveleges, and execution states.
+A process may then contain several \textit{contexts}, each with their own privileges,
+file descriptors, credentials and virtual memory mappings, yielding isolation at a low overhead while
+maintaining code efficiency and safety.
+%Maybe a little more about contexts, orthogonal to threads etc.
+
+Unfortunately, existing implementations rely on a modified kernel, which in turn 
+creates maintainability as well as forward and backward compatibility issues.
+For example, \textit{Light-Weight Contexts}[CITE] are implemented in the FreeBSD 11.0 kernel.
+In order to use them, one would have to compile and install the modified kernel,
+with no guarantee that future kernel updates and patches will be retrofitted into it.
+The mentionned issues impede wide-spread adoption and, subsequently, evolution of these solutions.
+On the other hand, abstractions such as \textit{lwc} require access to kernel level ressources 
+and are hardly decoupled from it.
+As they are not part of the usual programmer's utility-belt, forcing them into mainstream 
+kernels might be hard, even more so without users support.
+This therefore seems to be a circular problem.
+
+We believe that providing the context abstraction via efficient virtualization would enable
+to solve the aforementioned limitations.
+We implement \textit{Light-Wight Contexts} as a Dune[CITE] library.
+%Give high-level description of dune here. Detailed one will be in the related work part.
+Dune provides non-intrusive compatibility with the 64-bit x86 Linux kernel, with direct access
+to hardware features such as ring protection, page tables, and tagged TLBs.
+We implement virtual memory and file descriptors management with low overheads and flexible \textit{lwc} compatible interfaces.
+%Emphasise the fact that we can have a simpler mm mgmt than linux, hence making it cheaper to create/share/destroy memory regions.
+
+This paper's contributions are: 
+%TODO:  
+
+The rest of this paper is organized as follows: we present related work in Section[REF], describe 
+our design and interface for lwcs in Section[REF]. Section[REF] contains modifications done to Dune for lwc support.
+Evaluation and results for our implementation of lwcs are detailed in Section[REF].
+Section[REF] summarizes future work and we conclude in Section[REF].
+
+

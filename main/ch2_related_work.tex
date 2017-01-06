@@ -1,0 +1,39 @@
+\chapter{Related Work}
+%Wedge
+%Description, kind of what we want except that it still relies on a mapping 
+%between the memory region and an "execution thread", i.e., sthreads are associated
+%with some function to run. Not good, we want more separation.
+%LWC
+%Better abstraction, description and don't forget to tell how it was integrated
+%inside a kernel, i.e., meaning it had to modify the kernel and respect lots of APIs.
+%Dune
+%Description of dune (vtx etc.), enables to simplify the interface we consider by
+%managing the memory ourselves. Hence easier to implement LWC there.
+%"Like implementing a small simple kernel", low impact on performances.
+SOMETHING TO SAY WE'LL present both contexts solutions and virtualization.
+
+\textit{Wedge}[CITE] relies on Linux processes to implement \textit{sthreads} and provide 
+privilege separation and memory isolation.
+\textit{Sthread}s are default-deny compartments within a single address space.
+A compartement is defined by a thread of control and an associated security policy specifying
+memory access capabilities, file descriptors, privileges, and \textit{callgates} accesses, i.e., computation subroutines with different privileges.
+%Sthreads are a variant of Linux processes, where the inherited memory regions and file descriptors
+%can be specified by a security policy.
+By default, a newly created shtread only has a copy-on-write access to a pristine snapshot of the parent process's memory, taken just before the execution of its \textit{main} function.
+[CITE AUTHORS] argue that this pristine snapshot does not contain any sensitive data that could be leaked
+to the child sthread.
+Any sthread can be reverted to this initial state.
+Wedge also provides an analysis tool meant to help programmers refactor their existing applications into isolated compartements.
+%comment about the fact that this is just a help, not automated and hence still need to invest into it?
+
+\textit{Light-weight Contexts}[CITE] provide independent units of protection, privilege, and execution state within a process.
+\textit{LwC}s are orthogonal to threads, i.e., lwCs are non-schedulable entities, and hence do not incur a scheduling cost while switching between contexts.
+By default, an lwC inherit a private copy of the calling context's state at the time of the call, including
+per-thread register values, virtual memory, file descriptors and credentials.
+The parent lwC has a fine-grained control over ressources visible and shared with the child lwC, at creation time.
+Unlike Wedge[CITE], lwCs are able to snapshot and resume execution in any state, therefore making it more flexible.
+LwC's rely on a modified version of the FreeBSD 11.0 kernel.
+
+
+Dune[CITE] is a 64 bit x86 Linux kernel module and user-level library that relies on virtualization hardware to provide a process abstraction.
+Dune[CITE] allows dire access to hardware features such as ring protection, page tables, and tagged TLB's, while preserving existing operating system interfaces for processes.
