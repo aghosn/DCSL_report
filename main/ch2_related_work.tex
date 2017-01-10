@@ -17,7 +17,7 @@ The section's end is dedicated to Dune[CITE].
 \textit{Wedge}[CITE] relies on Linux processes to implement \textit{sthreads} and provide 
 privilege separation and memory isolation.
 \textit{Sthread}s are default-deny compartments within a single address space.
-A compartement is defined by a thread of control and an associated security policy specifying
+A compartment is defined by a thread of control and an associated security policy specifying
 memory access capabilities, file descriptors, privileges, and \textit{callgates} accesses, i.e., computation subroutines with different privileges.
 %Sthreads are a variant of Linux processes, where the inherited memory regions and file descriptors
 %can be specified by a security policy.
@@ -25,14 +25,14 @@ By default, a newly created shtread only has a copy-on-write access to a pristin
 [CITE AUTHORS] argue that this pristine snapshot does not contain any sensitive data that could be leaked
 to the child sthread.
 Any sthread can be reverted to this initial state.
-Wedge also provides an analysis tool meant to help programmers refactor their existing applications into isolated compartements.
+Wedge also provides an analysis tool meant to help programmers refactor their existing applications into isolated compartments.
 %comment about the fact that this is just a help, not automated and hence still need to invest into it?
 
 \textit{Light-weight Contexts}[CITE] provide independent units of protection, privilege, and execution state within a process.
 \textit{LwC}s are orthogonal to threads, i.e., lwCs are non-schedulable entities, and hence do not incur a scheduling cost while switching between contexts.
 By default, an lwC inherit a private copy of the calling context's state at the time of the call, including
 per-thread register values, virtual memory, file descriptors and credentials.
-The parent lwC has a fine-grained control over ressources visible and shared with the child lwC, at creation time.
+The parent lwC has a fine-grained control over resources visible and shared with the child lwC, at creation time.
 Unlike Wedge[CITE], lwCs are able to snapshot and resume execution in any state, therefore making it more flexible.
 LwC's rely on a modified version of the FreeBSD 11.0 kernel.
 
@@ -40,6 +40,6 @@ LwC's rely on a modified version of the FreeBSD 11.0 kernel.
 Dune[CITE] is a 64 bit x86 Linux kernel module and user-level library that relies on virtualization hardware to provide a process abstraction.
 Dune[CITE] allows direct access to hardware features such as ring protection, page tables, and tagged TLB's, while preserving existing operating system interfaces for processes.
 Dune deviates from standard VMMs by exposing a \textit{process} environment instead of a machine environment.
-While not able to support a regular guest OS, Dune proves to be ligther and more flexible.
+While not able to support a regular guest OS, Dune proves to be lighter and more flexible.
 For example, standard VMMs save all states needed to support a guest OS, while Dune only needs to focus on the process state.
 Moreover, hardware features are either directly accessible or trigger a fall back to Linux, instead of emulating them as in standard VMMs.

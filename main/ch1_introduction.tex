@@ -22,15 +22,15 @@
 Processes are the common abstraction in general purpose kernels to represent a
 unit of isolation in terms of memory, privilege, and execution state.
 Processes enable to isolate applications from each other, by preventing one process
-from accessing another's memory, privileged ressources, and state.
-However, process management, context switching, and ressource accountability introduce 
-non-negligeable overheads at the OS-level, especially compared to the associated hardware costs.
+from accessing another's memory, privileged resources, and state.
+However, process management, context switching, and resource accountability introduce 
+non-negligible overheads at the OS-level, especially compared to the associated hardware costs.
 
 While the thread abstraction enables to isolate units of computation,
 memory isolation is attainable only by going through the costly creation and management 
 of a new process.
 Others[CITE] have identified this discrepancy and designed new interfaces, henceforth decoupling
-memory isolation, priveleges, and execution states.
+memory isolation, privileges, and execution states.
 A process may then contain several \textit{contexts}, each with their own privileges,
 file descriptors, credentials and virtual memory mappings, yielding isolation at a low overhead while
 maintaining code efficiency and safety.
@@ -41,14 +41,14 @@ creates maintainability as well as forward and backward compatibility issues.
 For example, \textit{Light-Weight Contexts}[CITE] are implemented in the FreeBSD 11.0 kernel.
 In order to use them, one would have to compile and install the modified kernel,
 with no guarantee that future kernel updates and patches will be retrofitted into it.
-The mentionned issues impede wide-spread adoption and, subsequently, evolution of these solutions.
-On the other hand, abstractions such as \textit{lwc} require access to kernel level ressources 
+The mentioned issues impede wide-spread adoption and, subsequently, evolution of these solutions.
+On the other hand, abstractions such as \textit{lwc} require access to kernel level resources 
 and are hardly decoupled from it.
 As they are not part of the usual programmer's utility-belt, forcing them into mainstream 
 kernels might be hard, even more so without users support.
 This therefore seems to be a circular problem.
 
-We believe that providing the context abstraction via efficient virtualization would enable
+We believe that providing the context abstraction via efficient visualization would enable
 to solve the aforementioned limitations.
 We implement \textit{Light-Wight Contexts} as a Dune[CITE] library.
 %Give high-level description of dune here. Detailed one will be in the related work part.
