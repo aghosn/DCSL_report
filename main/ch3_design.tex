@@ -15,29 +15,44 @@
 %Also, with stable interfaces between each layer, it is easy to replace individual layer, and maintain them.
 %Also keep backward compatibility with Dune (hide all of this behind a flag)
 %Can fine tune it to our needs for LwC.
+%
+%TODO aghosn: ADD FIGURES!
 
 Light-weight contexts live at the boundary between user applications and the kernel memory management.
-As such, they benefit from flexible and efficient high-level memory abstractions.
-%We want to be able to remove some mappings, share others, etc. Easier with memory regions
-%i.e., treat memory as contiguous regions with same access rights.
-
+As such, they require flexible and efficient high-level memory abstractions.
+More precisely, the LwC library needs to copy, add, share, and remove memory mappings between different contexts.
+To facilitate these manipulations, an address space needs to be represented as a set of contiguous memory regions with the same access rights, i.e., contiguous portions of the address space that can be treated in the same fashion.
 
 Dune's original design only provides a rigid API for page table manipulations.
+Page tables are a low-level memory representation where page-sized entries are accessed via four levels of indirection.
+Transformations are performed on a per-page basis.
+In the context of Dune, this representation is an over-simplification of memory management that provides the basic functionalities needed by Dune's applications.
+In Dune, guest memory is mapped, via the EPT, as closely as possible to the host address space.
+This rigid mapping simplifies VMExits by removing the need for syscall argument interposition and address translation.
+While acceptable from Dune's point of view, this design is not flexible enough to efficiently implement LwCs.
+Moreover, the page-table abstraction is agnostic to memory regions and too low-level for users to easily reflect upon copied and shared memory between contexts.
+We thus identified the need for higher-level memory abstractions and designed a new Dune's \textit{mmu}.
 %Problems with page tables:
 %low level, inefficient (many accesses especially in dune), does not fit lwC.
 %Hence need to redesign everything top to bottom.
 %while keeping backward compatibility. Adding layers of indirection and abstraction on top of page tables.
 
-The new memory design is a simplified version of the Linux kernel mmu.
+Our memory design is a simplified version of the Linux kernel mmu.
+We maintain the same layers, i.e., memory regions, virtual memory regions, and page tables.
+A memory region (\textit{mm}) represents an address space.
+It can be seen as a collection of virtual memory regions (\textit{vmas}).
+A vma abstracts a contiguous virtual memory region with uniform access rights.
+Each mm is associated with a page root, i.e., a hierarchy of page tables, that reflect the vmas it contains.
+We distribute 
 %Same layers, i.e., mms, containing list and red-black trees of vmas.
 %vma contiguous regions with same access rights
 %page tables. Here is where the COW takes place.
 %Each layer provides API to apply changes etc. and call in cascade, hence, can perform everything at the higher level and changes will be applied to the lower levels.
 %Result -> we only need to care about mms, hence we have a simpler interface for lwCs.
 
-
-
-
+Layers are designed to be agnostic about upper ones.
+%APIs give access to functionalities, meaning that we can redefine implementation at any layer.
+%Can tailor impl to our need without refactoring the entire mmu.
 
 \section{LwC as a Dune Library}
 LwC == memory stuff + file descriptors (todo)
