@@ -36,4 +36,11 @@ LwC's rely on a modified version of the FreeBSD 11.0 kernel.
 
 
 Dune[CITE] is a 64 bit x86 Linux kernel module and user-level library that relies on virtualization hardware to provide a process abstraction.
-Dune[CITE] allows dire access to hardware features such as ring protection, page tables, and tagged TLB's, while preserving existing operating system interfaces for processes.
+Dune[CITE] allows direct access to hardware features such as ring protection, page tables, and tagged TLB's, while preserving existing operating system interfaces for processes.
+Dune deviates from standard VMMs by exposing a \textit{process} environment instead of a machine environment.
+While not able to support a regular guest OS, Dune proves to be ligther and more flexible.
+
+
+process == narrower interface -> state of Dune is simpler to solve
+hardware either directly accessible or fall back to linux
+
