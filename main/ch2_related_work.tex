@@ -10,7 +10,9 @@
 %Description of dune (vtx etc.), enables to simplify the interface we consider by
 %managing the memory ourselves. Hence easier to implement LWC there.
 %"Like implementing a small simple kernel", low impact on performances.
-SOMETHING TO SAY WE'LL present both contexts solutions and virtualization.
+%SOMETHING TO SAY WE'LL present both contexts solutions and virtualization.
+This section presents Wedge[CITE] and Dune[CITE], two different designs and implementation striving to provide a new abstraction for memory isolation.
+The section's end is dedicated to Dune[CITE].
 
 \textit{Wedge}[CITE] relies on Linux processes to implement \textit{sthreads} and provide 
 privilege separation and memory isolation.
@@ -39,8 +41,5 @@ Dune[CITE] is a 64 bit x86 Linux kernel module and user-level library that relie
 Dune[CITE] allows direct access to hardware features such as ring protection, page tables, and tagged TLB's, while preserving existing operating system interfaces for processes.
 Dune deviates from standard VMMs by exposing a \textit{process} environment instead of a machine environment.
 While not able to support a regular guest OS, Dune proves to be ligther and more flexible.
-
-
-process == narrower interface -> state of Dune is simpler to solve
-hardware either directly accessible or fall back to linux
-
+For example, standard VMMs save all states needed to support a guest OS, while Dune only needs to focus on the process state.
+Moreover, hardware features are either directly accessible or trigger a fall back to Linux, instead of emulating them as in standard VMMs.

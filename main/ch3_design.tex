@@ -1,8 +1,49 @@
 \chapter{Design}
-Relies on memory regions abstractions.
-Relies on sandboxing.
-Detailed representation of an mm and vma.
-COW for the mm when creating a new context.
-Can specify modifiers for what is shared, copied etc.
+%Relies on memory regions abstractions.
+%Relies on sandboxing.
+%Detailed representation of an mm and vma.
+%COW for the mm when creating a new context.
+%Can specify modifiers for what is shared, copied etc.
+
+\section{Re-Designing Memory Management}
+%First challenge is to have a flexible enough memory mgmt unit.
+%
+%Before: only page tables pretty straigth forward.
+%
+%Now: memory regions, on top of vmas, on top of page tables.
+%Higher level of abstraction, enables to simply mem mgmt, especially for lwc.
+%Also, with stable interfaces between each layer, it is easy to replace individual layer, and maintain them.
+%Also keep backward compatibility with Dune (hide all of this behind a flag)
+%Can fine tune it to our needs for LwC.
+
+Light-weight contexts live at the boundary between user applications and the kernel memory management.
+As such, they benefit from flexible and efficient high-level memory abstractions.
+%We want to be able to remove some mappings, share others, etc. Easier with memory regions
+%i.e., treat memory as contiguous regions with same access rights.
+
+
+Dune's original design only provides a rigid API for page table manipulations.
+%Problems with page tables:
+%low level, inefficient (many accesses especially in dune), does not fit lwC.
+%Hence need to redesign everything top to bottom.
+%while keeping backward compatibility. Adding layers of indirection and abstraction on top of page tables.
+
+The new memory design is a simplified version of the Linux kernel mmu.
+%Same layers, i.e., mms, containing list and red-black trees of vmas.
+%vma contiguous regions with same access rights
+%page tables. Here is where the COW takes place.
+%Each layer provides API to apply changes etc. and call in cascade, hence, can perform everything at the higher level and changes will be applied to the lower levels.
+%Result -> we only need to care about mms, hence we have a simpler interface for lwCs.
+
+
+
+
+
+\section{LwC as a Dune Library}
+LwC == memory stuff + file descriptors (todo)
+API
+very close to what we get in the original implementation.
+root LwC.
+
 
 
