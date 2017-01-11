@@ -86,14 +86,31 @@ Enabling multi-thread support is, however, an important future goal.
 %lwc_switch
 A thread can switch between contexts using the \emph{lwc\_switch} function.
 The call takes as arguments a reference to the target lwC, a pointer to extra arguments, as well as a \emph{lwc\_rsrc\_spec} pointer.
+The caller's state is saved inside the current lwC, i.e., switching back to the caller lwC will resume execution right after the call to \emph{lwc\_switch}.
+When an lwC is \emph{switch to}, the caller's lwC is available within the \emph{lwc\_rsrc\_spec.caller} and extra arguments as \emph{lwc\_rsrc\_spec.args}.
 
 %lwc_free
+The lwC library provides a method, called \emph{lwc\_free}, that enables to delete an lwC and free its resources.
+All pages that are private to the context's address space are freed, the context is removed from the parent's children list, and all references maintained by the context's children are removed.
+Dune's page allocator enables to identify shared pages referenced only by this context and return them to the free pool.
+
 
 %Differences: 
 %lwcs are pointers, not file descriptors => simplified impl and LwCs visibility implemented as part of memory mapping instead of file descriptors. Switching back to original design is not that hard.
 %Queue of such lwcs, all visible from the kernel space.
 %root lwc maps the original dune mapping. 
 %No syscall limitation
+Dune's lwC library differs from the original implementation in several aspects.
+First, lwCs are data structures referenced using pointers, instead of file descriptors.
+This simplification enabled to focus on implementing and testing the lwC functionalities, rather than on their management.
+In the future, we might revert back to the original design.\\
+Another major difference concerns the system call interposition/emulation, using lwCs.
+In the original design[REF], an lwC can service system calls on the behalf of one of its children.
+This mechanism enables to perform privileged operations in a restricted environment.
+Although very interesting, we did not identify this feature as an essential functionality and therefore did not implement it yet.
+Furthermore, we already have a similar mechanism in Dune, notably thanks to our sandbox and syscall map implementation (see Section[REF]).
+
+
 
 
 
