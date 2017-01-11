@@ -108,9 +108,5 @@ Another major difference concerns the system call interposition/emulation, using
 In the original design[REF], an lwC can service system calls on the behalf of one of its children.
 This mechanism enables to perform privileged operations in a restricted environment.
 Although very interesting, we did not identify this feature as an essential functionality and therefore did not implement it yet.
-Furthermore, we already have a similar mechanism in Dune, notably thanks to our sandbox and syscall map implementation (see Section[REF]).
-
-
-
-
-
+Furthermore, Dune's sandbox and syscall map (see Section[REF]) already provide the same functionality.
+We would thus rather provide an interface within the lwC library that leverages these mechanisms to implement syscall interposition and emulation, than re-implement an existing functionality.
