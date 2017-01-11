@@ -53,7 +53,47 @@ Moreover, underlying data structures can be tailored to simplify LwC common oper
 %API
 %very close to what we get in the original implementation.
 %Simpler implementation see section 4.
-%root LwC.
+%root LwC. add table for function calls.
+LwCs encapsulate privileges and execution states within a process.
+They are independent units of isolation, containing their own virtual address space and file descriptors.
+As explained in [REF], LwCs are orthogonal to threads, i.e., a thread can switch back and forth between several lwCs.
+As in the original design, we create an \textit{lwC root} when a Dune process is initialized.
+This contexts maps the original virtual memory address allocated to the process.\\
+Table [REF] presents our lwC API.
+We performed slight simplifications to the original API[REF], but kept the same basic functionalities.
+
+%Same:
+%lwcCreate. => add figure for structures
+The \textit{lwc\_create} operation enables to create a new contexts.
+By default, all user space memory mappings are shared between the parent and child contexts using copy-on-write.
+The child and parent contexts keep a reference to each other.\\
+The \emph{lwc\_create} call does not trigger a switch to the newly created context.
+Instead, the caller receives a positive integer as a function call return value.
+The \emph{lwc\_res\_t} argument is filled by the system call with a reference to the newly created context, called \emph{n\_lwc}, and a null \emph{caller} attribute.\\
+The child, on the other hand, gets '0' as return value, null as \emph{n\_lwc}, and a reference to the parent lwC as \emph{caller} by default.
+
+In the absence of modifiers, the child lwC inherits state at the time of the call, a copy-on-write copy of the user space virtual memory, file descriptors, and credentials from the calling lwC.
+The parent context can, however, modify its resources visibility by providing modifiers via the \emph{lwc\_rsrc\_spec} argument.
+Entire memory regions can easily be shared or unmapped.
+Figure [REF] details the \emph{lwc\_rsrc\_spec} structure.\\
+Unlike the original lwC implementation[REF], the saved state only contains the current thread of execution.
+This is a simplification step we took for our first lwC implementation.
+Saving all thread states requires barrier synchronization upon \emph{lwc\_create} calls, to ensure that all threads are in a consistent state when the snapshot is taken.
+This introduces an extra level of complexity that we do not need, for the moment, to benefit from basic lwC functionalities.
+Enabling multi-thread support is, however, an important future goal.
+%a bit more on the other modifiers that can be specified.
+
+%lwc_switch
+A thread can switch between contexts using the \emph{lwc\_switch} function.
+The call takes as arguments a reference to the target lwC, a pointer to extra arguments, as well as a \emph{lwc\_rsrc\_spec} pointer.
+
+%lwc_free
+
+%Differences: 
+%lwcs are pointers, not file descriptors => simplified impl and LwCs visibility implemented as part of memory mapping instead of file descriptors. Switching back to original design is not that hard.
+%Queue of such lwcs, all visible from the kernel space.
+%root lwc maps the original dune mapping. 
+%No syscall limitation
 
 
 
