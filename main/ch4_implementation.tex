@@ -39,7 +39,7 @@ The \emph{mm} are part of a global queue that resides in kernel space and contai
 A direct implication is that creating, initializing, using, and managing \emph{mm}s in Dune requires less operations than in Linux.
 
 %vmas
-A virtual memory area (\emph{vma}) is an abstraction representing a continuous virtual memory portion accessed in a uniform fashion, i.e., a virtual memory segment with certain access rights.
+A virtual memory area (\emph{vma}) abstracts a continuous virtual memory portion accessed in a uniform fashion, i.e., a virtual memory segment with certain access rights.
 Dune's \emph{vma} representation is described in Figure [REF].
 Once again, the implementation is greatly simplified compared to Linux, which requires more management variables and provides more functionalities than we do.\\
 A \emph{vma} contains a \emph{vm start} and a \emph{vm end} that define the range of addresses for this area.
@@ -50,7 +50,7 @@ In other words, the \emph{mm} structure is never accessed within the \emph{vma} 
 
 %page tables.
 Dune's original page table representation was preserved and extended.
-Preserving the original interface and basic implementation was vital in order to retain backward compatibility and support for existing Dune applications.
+Keeping the original interface and basic implementation was vital in order to retain backward compatibility and support for existing Dune applications.
 As explained previously, it is also needed in order to evaluate delays introduced by new levels of indirection in the memory management unit.
 The main effort was put on refactoring the code's layout so as to provide better modularity and encapsulate all memory related operations within the new MMU.
 The major modifications were applied to Dune's initialization phase and, hence, do not impact runtime performances.
@@ -58,8 +58,39 @@ The major modifications were applied to Dune's initialization phase and, hence, 
 \section{One Address Space fits them all}
 %The synchronization
 %The system call interposition with syscallmap
+Dune was not designed to provide multiple address spaces within the same process.
+In fact, virtualization comes at a price.
+In order for system calls to be propagated and served by the underlying host OS, Dune had to make sure that all guest virtual addresses are valid host virtual addresses.
+Dune's process initialization as well as callback functions used during memory allocation are responsible for keeping the guest and host memory mappings synchronized.\\
+Implementing multiple address spaces within the same Dune process enables to map the same virtual address to different physical pages.
+While vital for the lwC library implementation, this introduces a discrepancy between the guest and host mapping.
+In fact, upon a VMExit, a virtual address might map to a different page in the host than in the guest.\\
+Consider the example provided in Figure [REF].
+Each context has its own memory buffer for the \emph{printf}.
+Both buffers are mapped to the same virtual address, but correspond to different physical addresses.
+Meanwhile, in the host, this virtual address is mapped to the same physical page as in the parent context.
+As a result, when the child context performs a printf and triggers a VMExit, the system call will output the memory content mapped to this virtual address, i.e., the parent's page.
+Not only do we print the wrong information, but we also break the isolation between the parent and the child.
+We therefore have to come up with a solution to map several address spaces to one, and enforce isolation between them.
+
+Dune syscall map enables to interpose on system calls and sanitize arguments.\\
+TODO explain how we map. 
 
 \section{LwCs System Call Wrappers}
 %saving arguments is not done the way it needs to be done.
 %By default dune does not save all registers etc.
 %Created a new wrapper.
+The lwC library functionalities are exposed as system call in Dune.
+As for any system call in Dune, a trap frame with the content of the registers is created and passed as argument to the system call handler.
+After the call is serviced, the execution is resumed and the content of certain registers is restored.
+There is, however, a mismatch between the default trap frame behavior in Dune and lwC requirements.
+In fact, not all registers are saved and restored.
+While expected for the majority of system calls, this enables to leak information between different contexts when performing a switch.
+In fact, after a switch, some registers might still contain information related to the previous context.
+This needs to be fixed in a flexible way that integrates well with Dune's mechanisms.\\
+The system call wrapper, i.e., the piece of assembly responsible for dumping the trap frame and performing the call to the handler, is a central and unique piece of code that cannot be duplicated.
+As a result, we modified it to handle lwC related system calls in a separated branch, where the entire trap frame is saved within the current context.
+Upon a return from a switch, all registers, except expected return values of course, are restored according to the saved trap frame, hence preventing leaks between contexts.
+This solution, although simple, presents the disadvantage of putting lwC specific code inside Dune, an intrusion that we would like to avoid.
+A better mechanism to handle lwC special requirements for system calls still needs to be devised.  
+
