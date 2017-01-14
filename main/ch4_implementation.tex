@@ -1,14 +1,51 @@
 \chapter{Implementation}
-Redoing the memory management:
-pages, pgroot, vmas, mms. New hierarchy, backward compatibility preserved though
-all the code is available (hide mms behind a flag).
+%Redoing the memory management:
+%pages, pgroot, vmas, mms. New hierarchy, backward compatibility preserved though
+%all the code is available (hide mms behind a flag).
+%
+%Sandbox is backported to dune.
+%Describe what the sandbox is and the different challenges I faced.
+%
+%Now we have lwc as a library, inside a program ran inside the sandbox.
+%
+%lwc implementation details, tricks, e.g., the mapping between host and guest,
+%translating the syscall arguments (i.e., the gvas to hvas)
 
-Sandbox is backported to dune.
-Describe what the sandbox is and the different challenges I faced.
+%TODO introduction for the chapter.
 
-Now we have lwc as a library, inside a program ran inside the sandbox.
+\section{Multiple Address Spaces in Dune}
+%The structural interfaces.
+%Replacing Dune's initialization and call hierarchy.
+%backward compatibility, enable to hide behind a flag.
+The lwC library strives to provide multiple address spaces via an abstraction completely decoupled from the process and thread ones.
+By default, Dune's handles memory mappings via the use of page tables.
+While enabling a fine-grained memory management, page tables prove to be a cumbersome abstraction when performing operations that impact large memory regions.
+As explained in [REF], we solved this issue by implementing a simplified version of Linux MMU.
+The memory hierarchy is divided into 3 layers of abstraction: memory mapping regions, virtual memory areas, and page tables.
 
-lwc implementation details, tricks, e.g., the mapping between host and guest,
-translating the syscall arguments (i.e., the gvas to hvas)
+A memory mapping region (\emph{mm}) represents an address space.
+It contains a collection of virtual memory areas, implemented.
+Dune's \emph{mm} structure is exposed in Figure [REF].
+Our implementation is an over-simplification compared to Linux's \emph{mms}.
+In Linux, the virtual memory areas are handled as both a red-black tree and a double-linked list, which enables  efficient address range search.
+In our case, for the moment, we only have a double-linked list for \emph{vmas}, i.e., the \emph{l\_vm\_area * mmap}.
+Simplifying this aspect of the MMU's implementation enabled to have a working and stable prototype quickly.
+A tree-based representation is a handy optimization that we will add to our implementation.\\
+An \emph{mm} keeps a reference to the page table hierarchy corresponding to its mapping.
+This reference is a simple pointer to a \emph{pent_t} structure.\\
+While Linux's \emph{mm_struct} contains several structure variables used for management and statistics by the OS, Dune's implementation is much simpler.
+The \emph{mm} are part of a global queue that resides in kernel space and contains all the memory mappings created.
+A direct implication is that creating, initializing, using, and managing \emph{mm}s in Dune requires less operations than in Linux.
 
 
+
+
+
+\section{One Address Space fits them all}
+%The synchronization
+%The system call interposition with syscallmap
+
+\section{LwCs System Call Wrappers}
+%saving arguments is not done the way it needs to be done.
+%By default dune does not save all registers etc.
+%Created a new wrapper.
