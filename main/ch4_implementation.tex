@@ -23,23 +23,37 @@ While enabling a fine-grained memory management, page tables prove to be a cumbe
 As explained in [REF], we solved this issue by implementing a simplified version of Linux MMU.
 The memory hierarchy is divided into 3 layers of abstraction: memory mapping regions, virtual memory areas, and page tables.
 
+%mms
 A memory mapping region (\emph{mm}) represents an address space.
 It contains a collection of virtual memory areas, implemented.
 Dune's \emph{mm} structure is exposed in Figure [REF].
 Our implementation is an over-simplification compared to Linux's \emph{mms}.
 In Linux, the virtual memory areas are handled as both a red-black tree and a double-linked list, which enables  efficient address range search.
-In our case, for the moment, we only have a double-linked list for \emph{vmas}, i.e., the \emph{l\_vm\_area * mmap}.
+In our case, for the moment, we only have a double-linked list for \emph{vmas}, i.e., the \emph{mmap} attribute.
 Simplifying this aspect of the MMU's implementation enabled to have a working and stable prototype quickly.
 A tree-based representation is a handy optimization that we will add to our implementation.\\
 An \emph{mm} keeps a reference to the page table hierarchy corresponding to its mapping.
-This reference is a simple pointer to a \emph{pent_t} structure.\\
-While Linux's \emph{mm_struct} contains several structure variables used for management and statistics by the OS, Dune's implementation is much simpler.
+This reference is a simple pointer to a \emph{pent\_t} structure.\\
+While Linux's \emph{mm} contains several structure variables used for management and statistics by the OS, Dune's implementation is much simpler.
 The \emph{mm} are part of a global queue that resides in kernel space and contains all the memory mappings created.
 A direct implication is that creating, initializing, using, and managing \emph{mm}s in Dune requires less operations than in Linux.
 
+%vmas
+A virtual memory area (\emph{vma}) is an abstraction representing a continuous virtual memory portion accessed in a uniform fashion, i.e., a virtual memory segment with certain access rights.
+Dune's \emph{vma} representation is described in Figure [REF].
+Once again, the implementation is greatly simplified compared to Linux, which requires more management variables and provides more functionalities than we do.\\
+A \emph{vma} contains a \emph{vm start} and a \emph{vm end} that define the range of addresses for this area.
+Associated access permissions are encapsulated within the \emph{vm flags}, i.e., a high level representation that maps onto the page table bit-flags.
+Virtual memory areas keep a reference to the \emph{mm} they belong to.
+While introducing a (relatively light) dependency between \emph{mm}s and \emph{vma}s implementations, the \emph{mm} attribute is used as an argument when an operation at the \emph{vma} level needs to propagate changes to the upper level.
+In other words, the \emph{mm} structure is never accessed within the \emph{vma} layer, but rather used as an interface to call \emph{mm} routines when needed.
 
-
-
+%page tables.
+Dune's original page table representation was preserved and extended.
+Preserving the original interface and basic implementation was vital in order to retain backward compatibility and support for existing Dune applications.
+As explained previously, it is also needed in order to evaluate delays introduced by new levels of indirection in the memory management unit.
+The main effort was put on refactoring the code's layout so as to provide better modularity and encapsulate all memory related operations within the new MMU.
+The major modifications were applied to Dune's initialization phase and, hence, do not impact runtime performances.
 
 \section{One Address Space fits them all}
 %The synchronization
