@@ -8,7 +8,27 @@
 
 %Performance wide
 \section{Performance evaluation and improvement}
+Applications rely on Dune for performance.
+For example, IX[REF] uses access to hardware features in order to provide BLABLA.
+As a result, evaluating the new Dune memory management unit needs to be evaluated.
+The goal is to measure the overhead introduced by the extra levels of indirection, and reduce them if possible.
+As explained, maintaining backward compatibility plays an essential role in the performance evaluation of the new implementation.
+If the delays introduced are not tolerable, the user needs to be able to deactivate the mmu hierarchy and fall back to the default page table handling of memory.\\
+The current implementation presents opportunities for optimizations.
+For example, a memory region keeps track of its virtual memory areas using a double linked list.
+In order to speed-up address range search, a search-tree-based representation would be more efficient.
+Another example of potential room for optimization is how a address space is copied.
+For the moment, the entire memory hierarchy is copied and only the physical pages are marked copy-on-write.
+A possible improvement would be to use a similar mechanism at higher levels to reduce the number of allocations and initializations when copying an address space.
 
 \section{Extending the Library}
+Dune's lwC library provides the basic lwC functionalities.
+While enough to provide memory isolation within a process, the library could be extended to provide an interface for system call interposition.
+Dune provide such mechanism at the kernel level.
+It would therefore be interesting to allow the lwC users to tap into them and limit the visibility of system calls within a child context.
+This functionality is already present within the original lwC library.
 
-\section{OpenSSL as a target use-case}
+\section{Use-cases}
+Real-life use cases should be constructed to validated our implementation.
+OpenSSL would be a good target application.
+The lwC library could be used to enforce isolation between different sessions.
